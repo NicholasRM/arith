@@ -6,9 +6,8 @@ fn rgb_to_float(pixel :&Rgb) -> (f64, f64, f64){
 #[cfg(test)]
 mod tests {
     #[test]
-    fn get_test() {
-        let arr = Array2::from(vec![1, 2, 3, 4, 5, 6, 7, 8, 9], 3, 3);
-        let four = arr.get(1, 0);
-        assert_eq!(four, &4);
+    fn test_rgb_to_float() {
+        let red_example: &Rgb = Rgb{red: 255, green: 0, blue: 0};
+        assert_eq!(rgb_to_float(red_example), (1.0, 0.0, 0.0));
     }
 }
