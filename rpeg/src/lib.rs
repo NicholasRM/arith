@@ -1,5 +1,6 @@
 pub mod codec;
 pub mod pixel_conversion;
+pub mod pixel_block;
 
 // #[cfg(test)]
 // mod tests {
