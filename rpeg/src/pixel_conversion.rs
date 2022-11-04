@@ -1,7 +1,7 @@
 use csc411_image::Rgb;
 
 pub fn rgb_to_float(pixel :&Rgb) -> (f64, f64, f64){
-    (pixel.red as f64 / 255.0, pixel.green as f64 / 255.0, pixel.blue as f64)
+    (pixel.red as f64 / 255.0, pixel.green as f64 / 255.0, pixel.blue as f64 / 255.0)
 }
 
 pub fn float_to_rgb(rgb_floats: (f64, f64, f64)) -> Rgb{
