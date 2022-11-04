@@ -1,30 +1,87 @@
 use csc411_image::Rgb;
 
-pub fn rgb_to_float(pixel :&Rgb) -> (f64, f64, f64){
-    (pixel.red as f64 / 255.0, pixel.green as f64 / 255.0, pixel.blue as f64 / 255.0)
+pub fn rgb_to_float(pixel :&Rgb, denom: f64) -> (f64, f64, f64){
+    (
+        pixel.red as f64 / denom,
+        pixel.green as f64 / denom,
+        pixel.blue as f64 / denom
+    )
 }
 
-pub fn float_to_rgb(rgb_floats: (f64, f64, f64)) -> Rgb{
-    Rgb{red: (rgb_floats.0 * 255.0) as u16, green: (rgb_floats.1 * 255.0) as u16, blue: (rgb_floats.2 * 255.0) as u16}
+pub fn float_to_rgb(rgb_floats: (f64, f64, f64), denom: f64) -> Rgb{
+    let (r, g, b) = rgb_floats;
+    Rgb
+    {
+        red: (r * denom) as u16,
+        green: (g * denom) as u16,
+        blue: (b * denom) as u16
+    }
+}
+
+pub fn get_compression_tuple(rgb_floats: (f64, f64, f64)) -> (f64, f64, f64) {
+    let (r, g, b) = rgb_floats;
+    (
+        0.299*r + 0.587*g + 0.114*b,
+        -0.168736*r - 0.331264*g + 0.5*b,
+        0.5*r - 0.418688*g - 0.081312*b
+    )
+}
+
+pub fn get_decompression_tuple(comp_vid_floats: (f64, f64, f64)) -> (f64, f64, f64) {
+    let (y, pb, pr) = comp_vid_floats;
+    (
+        1.0*y + 0.0*pb + 1.402*pr,
+        (1.0*y - 0.344136*pb) - 0.714136*pr,
+        1.0*y + 1.772*pb + 0.0*pr
+    )
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::pixel_conversion::{rgb_to_float, float_to_rgb};
+    use crate::pixel_conversion;
     use csc411_image::Rgb;
 
     #[test]
     fn test_rgb_to_float() {
         let red_example = &Rgb{red: 255, green: 0, blue: 0};
-        assert_eq!(rgb_to_float(red_example), (1.0, 0.0, 0.0));
+        assert_eq!(pixel_conversion::rgb_to_float(red_example, 255.0), (1.0, 0.0, 0.0));
     }
 
     #[test]
     fn test_float_to_rgb(){
         let red_example = (1.0, 0.0, 0.0);
-        let output = float_to_rgb(red_example);
+        let output = pixel_conversion::float_to_rgb(red_example, 255.0);
         assert_eq!(output.red, 255);
         assert_eq!(output.green, 0);
         assert_eq!(output.blue, 0);
+    }
+
+    #[test]
+    fn test_compression_tuple() {
+        let red_example = (1.0, 0.0, 0.0);
+        assert_eq!(pixel_conversion::get_compression_tuple(red_example), (0.299, -0.168736, 0.5));
+    }
+
+    #[test]
+    fn test_decompression_tuple() {
+        let red_example = (0.299, -0.168736, 0.5);
+        let (output_r, output_g, output_b) = pixel_conversion::get_decompression_tuple(red_example);
+        let diff_r = (output_r - 1.0).abs();
+        let diff_g = (output_g - 1.321e-7).abs();
+        let diff_b = (output_b - -1.92e-7).abs();
+        assert!(diff_r < 0.00001 && diff_g < 0.00001 && diff_b < 0.00001);
+    }
+    #[test]
+    fn round_trip(){
+        let red_example = &Rgb{red: 255, green: 0, blue: 0};
+        let red_floats = pixel_conversion::rgb_to_float(red_example, 255.0);
+        let red_comp_vid = pixel_conversion::get_compression_tuple(red_floats);
+        let new_red_floats = pixel_conversion::get_decompression_tuple(red_comp_vid);
+        
+        let fixed = (new_red_floats.0.clamp(0.0, 1.0), new_red_floats.1.clamp(0.0, 1.0), new_red_floats.2.clamp(0.0, 1.0));
+        let new_red = pixel_conversion::float_to_rgb(fixed, 255.0);
+        assert_eq!(new_red.red, 255);
+        assert_eq!(new_red.green, 0);
+        assert_eq!(new_red.blue, 0);
     }
 }
