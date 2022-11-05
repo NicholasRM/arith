@@ -1,5 +1,6 @@
 use std::env;
 use rpeg::codec::{compress, decompress};
+
 fn main() {
   let args: Vec<String> = env::args().collect();
   let argnum = args.len();
