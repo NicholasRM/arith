@@ -158,4 +158,56 @@ mod tests {
         assert_eq!(bitpack::shls(-1, 64), 0);
         assert_eq!(bitpack::shls(-1, 0), -1);
     }
+
+    #[test]
+    fn unsigned_right_shifts() {
+        assert_eq!(bitpack::shru(0b10100000, 5), 0b101);
+        assert_eq!(bitpack::shru(0xf00000000, 32), 0xf);
+        assert_eq!(bitpack::shru(1111, 64), 0);
+        assert_eq!(bitpack::shru(7001, 0), 7001);
+    }
+
+    #[test]
+    fn signed_right_shifts() {
+        assert_eq!(bitpack::shrs(-1, 2), -1);
+        assert_eq!(bitpack::shrs(16, 2), 4);
+        assert_eq!(bitpack::shrs(-1, 64), 0);
+        assert_eq!(bitpack::shrs(-1, 0), -1);
+    }
+
+    #[test]
+    fn test_maxu() {
+        assert_eq!(bitpack::maxu(0), 0);
+        assert_eq!(bitpack::maxu(5), 0b11111);
+        assert_eq!(bitpack::maxu(48), 0xffffffffffff);
+        assert_eq!(bitpack::maxu(75), u64::MAX);
+    }
+
+    #[test]
+    fn test_maxs() {
+        assert_eq!(bitpack::maxs(0), 0);
+        assert_eq!(bitpack::maxs(5), 0b1111);
+        assert_eq!(bitpack::maxs(48), 0x7fffffffffff);
+        assert_eq!(bitpack::maxs(75), i64::MAX);
+    }
+
+    #[test]
+    fn test_fitsu() {
+        assert!(bitpack::fitsu(7, 3));
+        assert!(!bitpack::fitsu(64, 6));
+        assert!(!bitpack::fitsu(7, 0));
+        assert!(bitpack::fitsu(64, 64));
+        
+    }
+
+    #[test]
+    fn test_fitss() {
+        assert!(bitpack::fitss(7, 4));
+        assert!(!bitpack::fitss(64, 7));
+        assert!(!bitpack::fitss(7, 0));
+        assert!(bitpack::fitss(0x7fffffffffffffff, 64));
+        
+    }
+
+    
 }
