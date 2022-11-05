@@ -30,49 +30,49 @@ pub fn scaled_ints_to_coefficients(b_sign: i64, c_sign: i64, d_sign: i64) -> (f6
     (b, c, d)
 }
 
-pub fn compare_floats(x: f64, y: f64) -> bool{
-    if (x - y).abs() < 0.001{
-        return true;
-    }
-    return false;
-}
-
-pub fn compare_quad(x: (f64, f64, f64, f64), y: (f64, f64, f64, f64)) -> bool{
-    if !compare_floats(x.0, y.0){
-        return false;
-    }
-    else if !compare_floats(x.1, y.1){
-        return false;
-    }
-    else if !compare_floats(x.2, y.2){
-        return false;
-    }
-    else if !compare_floats(x.3, y.3){
-        return false;
-    }
-    else{
-        return true;
-    }
-}
-
-pub fn compare_trio(x: (f64, f64, f64), y: (f64, f64, f64)) -> bool{
-    if !compare_floats(x.0, y.0){
-        return false;
-    }
-    else if !compare_floats(x.1, y.1){
-        return false;
-    }
-    else if !compare_floats(x.2, y.2){
-        return false;
-    }
-    else{
-        return true;
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::quantize::{self, compare_quad, compare_floats, compare_trio, get_coefficients, get_luma, coefficients_to_scaled_ints, scaled_ints_to_coefficients};
+    use crate::quantize::{get_coefficients, get_luma, coefficients_to_scaled_ints, scaled_ints_to_coefficients};
+
+    fn compare_floats(x: f64, y: f64) -> bool{
+        if (x - y).abs() < 0.001{
+            return true;
+        }
+        return false;
+    }
+
+    fn compare_quad(x: (f64, f64, f64, f64), y: (f64, f64, f64, f64)) -> bool{
+        if !compare_floats(x.0, y.0){
+            return false;
+        }
+        else if !compare_floats(x.1, y.1){
+            return false;
+        }
+        else if !compare_floats(x.2, y.2){
+            return false;
+        }
+        else if !compare_floats(x.3, y.3){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    fn compare_trio(x: (f64, f64, f64), y: (f64, f64, f64)) -> bool{
+        if !compare_floats(x.0, y.0){
+            return false;
+        }
+        else if !compare_floats(x.1, y.1){
+            return false;
+        }
+        else if !compare_floats(x.2, y.2){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
     #[test]
     fn test_get_coefficients() {
