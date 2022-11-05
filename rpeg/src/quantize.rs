@@ -15,6 +15,46 @@ pub fn get_luma(a: f64, b: f64, c: f64, d: f64) -> (f64, f64, f64, f64){
     (y1, y2, y3, y4)
 }
 
+pub fn compare_floats(x: f64, y: f64) -> bool{
+    if (x - y).abs() < 0.001{
+        return true;
+    }
+    return false;
+}
+
+pub fn compare_quad(x: (f64, f64, f64, f64), y: (f64, f64, f64, f64)) -> bool{
+    if !compare_floats(x.0, y.0){
+        return false;
+    }
+    else if !compare_floats(x.1, y.1){
+        return false;
+    }
+    else if !compare_floats(x.2, y.2){
+        return false;
+    }
+    else if !compare_floats(x.3, y.3){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
+pub fn compare_trio(x: (f64, f64, f64), y: (f64, f64, f64)) -> bool{
+    if !compare_floats(x.0, y.0){
+        return false;
+    }
+    else if !compare_floats(x.1, y.1){
+        return false;
+    }
+    else if !compare_floats(x.2, y.2){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
 pub fn coefficients_to_scaled_ints(b: f64, c: f64, d: f64) -> (i64, i64, i64){
     let b_sign = (b.clamp(-0.3, 0.3) * 50.0) as i64;
     let c_sign = (c.clamp(-0.3, 0.3) * 50.0) as i64;
@@ -31,11 +71,13 @@ pub fn scaled_ints_to_coefficients(b_sign: i64, c_sign: i64, d_sign: i64) -> (f6
 
 #[cfg(test)]
 mod tests {
-    use crate::pixel_conversion;
-    use csc411_image::Rgb;
+    use crate::quantize;
+
+    use super::get_coefficients;
 
     #[test]
-    fn test_quantize() {
-        assert!(true);
+    fn test_get_coefficients() {
+        let answer = (0.5, 0.057, 0.294, 0.15);
+        assert_eq!(get_coefficients(0.299, 0.587, 0.114, 1.0), answer);
     }
 }
