@@ -79,8 +79,8 @@ fn read_uncompressed_image(filename: Option<&str>) -> (Array2<PixelBlock>, usize
     let mut arr_contents = Vec::new();
     let (trimmed_h, trimmed_w) = (img.height & !1_u32, img.width & !1_u32);
 
-    for r in (0..trimmed_w).step_by(2) {
-        for c in (0..trimmed_h).step_by(2) {
+    for r in (0..trimmed_h).step_by(2) {
+        for c in (0..trimmed_w).step_by(2) {
             arr_contents.push(
                 PixelBlock::pack(
                     r as usize, c as usize, 
@@ -94,7 +94,7 @@ fn read_uncompressed_image(filename: Option<&str>) -> (Array2<PixelBlock>, usize
     }
 
     (
-        Array2::from(arr_contents, (img.height & !1_u32) as usize, (img.width & !1_u32) as usize),
+        Array2::from(arr_contents, (img.height & !1_u32) as usize / 2, (img.width & !1_u32) as usize / 2),
         trimmed_h as usize,
         trimmed_w as usize,
         img.denominator
@@ -126,4 +126,9 @@ fn write_uncompressed_image(img: RgbImage) {
 
 fn write_compressed_image(compressed_arr: &Vec<[u8; 4]>, width: u32, height: u32) {
     csc411_rpegio::output_rpeg_data(compressed_arr.as_slice(), width, height);
+}
+
+#[cfg(test)]
+mod tests {
+
 }
