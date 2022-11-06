@@ -102,21 +102,6 @@ mod tests {
         }
     }
 
-    fn compare_trio(x: (f64, f64, f64), y: (f64, f64, f64)) -> bool{
-        if !compare_floats(x.0, y.0){
-            return false;
-        }
-        else if !compare_floats(x.1, y.1){
-            return false;
-        }
-        else if !compare_floats(x.2, y.2){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
-
     fn compare_pair(x: (f64, f64), y: (f64, f64)) -> bool{
         if !compare_floats(x.0, y.0){
             return false;

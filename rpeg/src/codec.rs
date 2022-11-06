@@ -1,6 +1,6 @@
 use array2::Array2;
 use csc411_image::{self, RgbImage, Read, Rgb, Write};
-use crate::{pixel_block::{self, PixelBlock}, pixel_conversion, quantize::{self, scaled_ints_to_coefficients, indices_to_chroma}};
+use crate::{pixel_block::PixelBlock, pixel_conversion, quantize};
 use csc411_rpegio;
 
 pub fn compress(filename: Option<&str>){
@@ -36,7 +36,6 @@ pub fn compress(filename: Option<&str>){
     }
 
     let compressed_arr: Vec<[u8; 4]> = compressed_img.into_iter().map(|x| x.to_be_bytes()).collect();
-
     write_compressed_image(&compressed_arr, width as u32, height as u32);
 }
 
@@ -60,7 +59,7 @@ pub fn decompress(filename: Option<&str>){
         img.append(&mut group.unpack());
     }
 
-    let mut indexed_img: Vec<(usize, Rgb)> = img.into_iter().map(|(r, c, pixel)| (r * width as usize + c, pixel)).collect();
+    let mut indexed_img: Vec<(usize, Rgb)> = img.into_iter().map(|(r, c, pixel)| ((r * width as usize + c), pixel)).collect();
     indexed_img.sort_by_key(|(idx, _)| *idx);
     let stripped_img: Vec<Rgb> = indexed_img.into_iter().map(|(_, pixel)| pixel).collect();
     let new_img = RgbImage {
@@ -84,10 +83,10 @@ fn read_uncompressed_image(filename: Option<&str>) -> (Array2<PixelBlock>, usize
             arr_contents.push(
                 PixelBlock::pack(
                     r as usize, c as usize, 
-                    img.pixels.get((r*img.width + c) as usize).unwrap().to_owned(),
-                    img.pixels.get((r*img.width + (c + 1)) as usize).unwrap().to_owned(),
-                    img.pixels.get(((r + 1)*img.width + c) as usize).unwrap().to_owned(),
-                    img.pixels.get(((r + 1)*img.width + (c + 1)) as usize).unwrap().to_owned()
+                    img.pixels.get((r * img.width + c) as usize).unwrap().to_owned(),
+                    img.pixels.get((r * img.width + (c + 1)) as usize).unwrap().to_owned(),
+                    img.pixels.get(((r + 1) * img.width + c) as usize).unwrap().to_owned(),
+                    img.pixels.get(((r + 1) * img.width + (c + 1)) as usize).unwrap().to_owned()
                 )
             )
         }
@@ -105,19 +104,20 @@ fn read_uncompressed_image(filename: Option<&str>) -> (Array2<PixelBlock>, usize
 fn read_compressed_image(filename: Option<&str>) -> (Vec<(usize, usize, u32)>, u32, u32) {
     let (img, width, height) = csc411_rpegio::read_in_rpeg_data(filename).unwrap();
     let rpeg_img: Vec<(usize, usize, u32)> = img.into_iter()
-    .enumerate()
-    .map(|(idx, bytes)| (
-        (idx / width as usize) * 2,
-        (idx % width as usize) * 2,
-        u32::from_be_bytes(bytes)
-    ))
-    .collect();
+        .enumerate()
+        .map(|(idx, bytes)| (
+            (idx / width as usize),
+            (idx % width as usize),
+            u32::from_be_bytes(bytes)
+        ))
+        .collect();
 
     (
         rpeg_img,
         width,
         height
     )
+
 }
 
 fn write_uncompressed_image(img: RgbImage) {
@@ -130,5 +130,25 @@ fn write_compressed_image(compressed_arr: &Vec<[u8; 4]>, width: u32, height: u32
 
 #[cfg(test)]
 mod tests {
+    use crate::*;
+    use csc411_image::*;
 
+    use super::read_uncompressed_image;
+
+    #[test]
+    fn test_read_uncompressed() {
+        let (arr, height, width, denominator) = read_uncompressed_image(Some("Connor.ppm"));
+        let new_arr: Vec<(usize, usize, Rgb)> = arr.iter_row_maj().map(|(_, _, group)| group.clone().unpack()).flatten().collect();
+        let mut new_img: Vec<(usize, Rgb)> = new_arr.into_iter().map(|(r, c, pixel)| (r*width + c, pixel)).collect();
+        new_img.sort_by_key(|(idx, _)| *idx);
+        let cleaned_img: Vec<Rgb> = new_img.into_iter().map(|(_, pixel)| pixel).collect();
+        let dest_img = RgbImage {
+            pixels: cleaned_img,
+            width: width as u32,
+            height: height as u32,
+            denominator
+        };
+        let _ = dest_img.write(Some("SameConnor.ppm"));
+        assert!(true);
+    }
 }
