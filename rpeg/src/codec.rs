@@ -106,8 +106,8 @@ fn read_compressed_image(filename: Option<&str>) -> (Vec<(usize, usize, u32)>, u
     let rpeg_img: Vec<(usize, usize, u32)> = img.into_iter()
         .enumerate()
         .map(|(idx, bytes)| (
-            (idx / width as usize),
-            (idx % width as usize),
+            (idx / (width / 2) as usize) * 2,
+            (idx % (width / 2) as usize) * 2,
             u32::from_be_bytes(bytes)
         ))
         .collect();
