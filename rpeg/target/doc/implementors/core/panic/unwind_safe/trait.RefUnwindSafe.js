@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["rpeg"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.63.0/core/panic/unwind_safe/trait.RefUnwindSafe.html\" title=\"trait core::panic::unwind_safe::RefUnwindSafe\">RefUnwindSafe</a> for <a class=\"struct\" href=\"rpeg/pixel_block/struct.PixelBlock.html\" title=\"struct rpeg::pixel_block::PixelBlock\">PixelBlock</a>","synthetic":true,"types":["rpeg::pixel_block::PixelBlock"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

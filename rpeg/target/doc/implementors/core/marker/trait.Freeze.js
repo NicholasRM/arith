@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["rpeg"] = [{"text":"impl Freeze for <a class=\"struct\" href=\"rpeg/pixel_block/struct.PixelBlock.html\" title=\"struct rpeg::pixel_block::PixelBlock\">PixelBlock</a>","synthetic":true,"types":["rpeg::pixel_block::PixelBlock"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

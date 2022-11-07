@@ -1,4 +1,4 @@
-use bitpack;
+use bitpack::bitpack;
 use csc411_arith;
 
 pub fn get_coefficients(y1: f64, y2: f64, y3: f64, y4: f64) -> (f64, f64, f64, f64){
@@ -33,12 +33,12 @@ pub fn scaled_ints_to_coefficients(b_sign: i64, c_sign: i64, d_sign: i64) -> (f6
 }
 
 pub fn singular_coefficient_to_scaled_int(a: f64) -> u64{
-    let a_scale = (a * bitpack::bitpack::maxu(9) as f64).round() as u64;
+    let a_scale = (a * bitpack::maxu(9) as f64).round() as u64;
     a_scale
 }
 
 pub fn singular_scaled_int_to_coefficient(a_scale: u64) -> f64{
-    let a = a_scale as f64 / bitpack::bitpack::maxu(9) as f64;
+    let a = a_scale as f64 / bitpack::maxu(9) as f64;
     a
 }
 
@@ -52,22 +52,22 @@ pub fn indices_to_chroma(pbidx: u64, pridx: u64) -> (f64, f64){
 
 pub fn construct_word(a: u64, b: i64, c: i64, d: i64, pb: u64, pr: u64) -> u32{
     let mut word: u64 = 0;
-    word = bitpack::bitpack::newu(word, 9, 23, a).unwrap();
-    word = bitpack::bitpack::news(word, 5, 18, b).unwrap();
-    word = bitpack::bitpack::news(word, 5, 13, c).unwrap();
-    word = bitpack::bitpack::news(word, 5, 8, d).unwrap();
-    word = bitpack::bitpack::newu(word, 4, 4, pb).unwrap();
-    word = bitpack::bitpack::newu(word, 4, 0, pr).unwrap();
+    word = bitpack::newu(word, 9, 23, a).unwrap();
+    word = bitpack::news(word, 5, 18, b).unwrap();
+    word = bitpack::news(word, 5, 13, c).unwrap();
+    word = bitpack::news(word, 5, 8, d).unwrap();
+    word = bitpack::newu(word, 4, 4, pb).unwrap();
+    word = bitpack::newu(word, 4, 0, pr).unwrap();
     word as u32
 }
 
 pub fn parse_word(word: u32) -> (u64, i64, i64, i64, u64, u64){
-    let a = bitpack::bitpack::getu(word as u64, 9, 23);
-    let b = bitpack::bitpack::gets(word as u64, 5, 18);
-    let c = bitpack::bitpack::gets(word as u64, 5, 13);
-    let d = bitpack::bitpack::gets(word as u64, 5, 8);
-    let pb = bitpack::bitpack::getu(word as u64, 4, 4);
-    let pr = bitpack::bitpack::getu(word as u64, 4, 0);
+    let a = bitpack::getu(word as u64, 9, 23);
+    let b = bitpack::gets(word as u64, 5, 18);
+    let c = bitpack::gets(word as u64, 5, 13);
+    let d = bitpack::gets(word as u64, 5, 8);
+    let pb = bitpack::getu(word as u64, 4, 4);
+    let pr = bitpack::getu(word as u64, 4, 0);
     (a, b, c, d, pb, pr)
 }
 

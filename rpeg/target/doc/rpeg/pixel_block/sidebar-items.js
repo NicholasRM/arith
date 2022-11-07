@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["PixelBlock","A struct containing a 2x2 block of RGB pixels and the coordinates of the top left pixel"]]};

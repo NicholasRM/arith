@@ -31,7 +31,7 @@ pub fn get_decompression_tuple(comp_vid_floats: (f64, f64, f64)) -> (f64, f64, f
     let (y, pb, pr) = comp_vid_floats;
     (
         1.0*y + 0.0*pb + 1.402*pr,
-        (1.0*y - 0.344136*pb) - 0.714136*pr,
+        1.0*y - 0.344136*pb - 0.714136*pr,
         1.0*y + 1.772*pb + 0.0*pr
     )
 }

@@ -8,10 +8,10 @@ impl<T: Clone> Array2<T> {
     /// Method that returns an Array2 with a Vec of elements,
     /// as well as defined dimensions, in row major order
     ///
-    /// #Arguments
-    /// input: a Vec containing inputted items of T
-    /// row_amt: the number of rows in the Vec
-    /// col_amt: the number of columns in the Vec
+    /// # Arguments
+    /// * input: a Vec containing inputted items of T
+    /// * row_amt: the number of rows in the Vec
+    /// * col_amt: the number of columns in the Vec
     ///
     /// Self: an instance of Array2
     pub fn from(input: Vec<T>, row_amt: usize, col_amt: usize) -> Self {
@@ -25,10 +25,10 @@ impl<T: Clone> Array2<T> {
 
     /// Method that indexes matrix and returns the element at the coordinates
     ///
-    /// #Arguments
-    /// &self: an immutable reference to an instance of Array2
-    /// row: the row index of the element
-    /// col: the col index of the element
+    /// # Arguments
+    /// * &self: an immutable reference to an instance of Array2
+    /// * row: the row index of the element
+    /// * col: the col index of the element
     ///
     /// &T: a reference to an element in the matrix
     pub fn get(&self, row: usize, col: usize) -> &T {
@@ -54,8 +54,8 @@ impl<T: Clone> Array2<T> {
     /// Checks to see if the matrix is not in row major order and
     /// returns an iterator over the elements in column major order
     ///
-    /// #Arguments
-    /// &self: an immutable reference to an instance of Array2
+    /// # Arguments
+    /// * &self: an immutable reference to an instance of Array2
     ///
     /// impl Iterator<Item=(usize, usize, &T)>: an iterator over references to items in matrix with the appropriate coordinates in
     /// the order (row, col)
