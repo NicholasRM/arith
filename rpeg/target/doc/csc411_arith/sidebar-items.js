@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":[["chroma_of_index","Given an `index` in the [0, 15] range, returns the `chroma` value for that `index`."],["index_of_chroma","Given a `chroma` value, returns the index of its closest value in the quantization table."]]};
