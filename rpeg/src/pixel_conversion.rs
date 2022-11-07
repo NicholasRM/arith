@@ -1,5 +1,12 @@
 use csc411_image::Rgb;
 
+
+/// Returns a tuple of three f64 values corresponding to the colors Red Green and Blue from `pixel`,
+/// with the values divided by `denom` to acheive a range of 0.0 - 1.0 for each color
+/// 
+/// # Arguments:
+/// * `pixel`: a reference to an Rgb pixel
+/// * `denom`: the denominator of the RgbImage casted as a floating point value
 pub fn rgb_to_float(pixel :&Rgb, denom: f64) -> (f64, f64, f64){
     (
         pixel.red as f64 / denom,
@@ -8,6 +15,12 @@ pub fn rgb_to_float(pixel :&Rgb, denom: f64) -> (f64, f64, f64){
     )
 }
 
+/// Returns an Rgb pixel containg the values of `rgb_floats` mulitplied by `denom` to get them back to the correct scale
+/// 
+/// # Arguments:
+/// * `rgb_floats`: a tuple of three floating point numbers representing Red, Green, and Blue on a scale of 0.0 - 1.0,
+/// stored as (red, green, blue)
+/// * `denom`: The denominator of the RgbImage
 pub fn float_to_rgb(rgb_floats: (f64, f64, f64), denom: f64) -> Rgb{
     let (r, g, b) = rgb_floats;
     Rgb
@@ -18,6 +31,11 @@ pub fn float_to_rgb(rgb_floats: (f64, f64, f64), denom: f64) -> Rgb{
     }
 }
 
+/// Returns a tuple of floating point values representing the Luma and Chroma of `rgb_floats`
+/// 
+/// # Arguments:
+/// * `rgb_floats`: a tuple of three floating point numbers representing Red, Green, and Blue on a scale of 0.0 - 1.0, 
+/// stored as (red, green, blue)
 pub fn get_compression_tuple(rgb_floats: (f64, f64, f64)) -> (f64, f64, f64) {
     let (r, g, b) = rgb_floats;
     (
@@ -27,6 +45,11 @@ pub fn get_compression_tuple(rgb_floats: (f64, f64, f64)) -> (f64, f64, f64) {
     )
 }
 
+/// Returns a tuple of floating point values representing Red, Green, and Blue on a scale of 0.0 - 1.0 
+/// derived by its luma and chroma values
+/// 
+/// # Arguments:
+/// * `comp_vid_floats`: returns a tuple of values representing a pixels luma and chroma values, stored as (y, pb, pr)
 pub fn get_decompression_tuple(comp_vid_floats: (f64, f64, f64)) -> (f64, f64, f64) {
     let (y, pb, pr) = comp_vid_floats;
     (
