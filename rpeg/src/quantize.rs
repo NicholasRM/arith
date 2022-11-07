@@ -1,4 +1,4 @@
-use bitpack;
+use bitpack::bitpack;
 use csc411_arith;
 
 /// Returns a tuple of 4 coefficients based on the luma from a 2 X 2 matrix of pixels, `y1`, `y2`, `y3`, and `y4`,
@@ -71,7 +71,7 @@ pub fn scaled_ints_to_coefficients(b_sign: i64, c_sign: i64, d_sign: i64) -> (f6
 /// # Arguments:
 /// * `a`: The average brightness of pixels in the matrix
 pub fn singular_coefficient_to_scaled_int(a: f64) -> u64{
-    let a_scale = (a * bitpack::bitpack::maxu(9) as f64).round() as u64;
+    let a_scale = (a * bitpack::maxu(9) as f64).round() as u64;
     a_scale
 }
 
@@ -80,7 +80,7 @@ pub fn singular_coefficient_to_scaled_int(a: f64) -> u64{
 /// # Arguments:
 /// * `a_scale`: the unsigned integer repsentation of the average brightness of the matrix
 pub fn singular_scaled_int_to_coefficient(a_scale: u64) -> f64{
-    let a = a_scale as f64 / bitpack::bitpack::maxu(9) as f64;
+    let a = a_scale as f64 / bitpack::maxu(9) as f64;
     a
 }
 
@@ -117,12 +117,12 @@ pub fn indices_to_chroma(pbidx: u64, pridx: u64) -> (f64, f64){
 /// * `pr`: the unsigned integer representation of the difference between brightness and red
 pub fn construct_word(a: u64, b: i64, c: i64, d: i64, pb: u64, pr: u64) -> u32{
     let mut word: u64 = 0;
-    word = bitpack::bitpack::newu(word, 9, 23, a).unwrap();
-    word = bitpack::bitpack::news(word, 5, 18, b).unwrap();
-    word = bitpack::bitpack::news(word, 5, 13, c).unwrap();
-    word = bitpack::bitpack::news(word, 5, 8, d).unwrap();
-    word = bitpack::bitpack::newu(word, 4, 4, pb).unwrap();
-    word = bitpack::bitpack::newu(word, 4, 0, pr).unwrap();
+    word = bitpack::newu(word, 9, 23, a).unwrap();
+    word = bitpack::news(word, 5, 18, b).unwrap();
+    word = bitpack::news(word, 5, 13, c).unwrap();
+    word = bitpack::news(word, 5, 8, d).unwrap();
+    word = bitpack::newu(word, 4, 4, pb).unwrap();
+    word = bitpack::newu(word, 4, 0, pr).unwrap();
     word as u32
 }
 
@@ -131,12 +131,12 @@ pub fn construct_word(a: u64, b: i64, c: i64, d: i64, pb: u64, pr: u64) -> u32{
 /// # Arguments:
 /// * `word`: a u32 value that holds the values returned in the tuple
 pub fn parse_word(word: u32) -> (u64, i64, i64, i64, u64, u64){
-    let a = bitpack::bitpack::getu(word as u64, 9, 23);
-    let b = bitpack::bitpack::gets(word as u64, 5, 18);
-    let c = bitpack::bitpack::gets(word as u64, 5, 13);
-    let d = bitpack::bitpack::gets(word as u64, 5, 8);
-    let pb = bitpack::bitpack::getu(word as u64, 4, 4);
-    let pr = bitpack::bitpack::getu(word as u64, 4, 0);
+    let a = bitpack::getu(word as u64, 9, 23);
+    let b = bitpack::gets(word as u64, 5, 18);
+    let c = bitpack::gets(word as u64, 5, 13);
+    let d = bitpack::gets(word as u64, 5, 8);
+    let pb = bitpack::getu(word as u64, 4, 4);
+    let pr = bitpack::getu(word as u64, 4, 0);
     (a, b, c, d, pb, pr)
 }
 
@@ -164,21 +164,6 @@ mod tests {
             return false;
         }
         else if !compare_floats(x.3, y.3){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
-
-    fn compare_trio(x: (f64, f64, f64), y: (f64, f64, f64)) -> bool{
-        if !compare_floats(x.0, y.0){
-            return false;
-        }
-        else if !compare_floats(x.1, y.1){
-            return false;
-        }
-        else if !compare_floats(x.2, y.2){
             return false;
         }
         else{

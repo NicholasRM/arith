@@ -1,4 +1,5 @@
 var sourcesIndex = {};
+sourcesIndex["rpeg"] = {"name":"","files":["codec.rs","lib.rs","pixel_block.rs","pixel_conversion.rs","quantize.rs"]};
 sourcesIndex["adler"] = {"name":"","files":["algo.rs","lib.rs"]};
 sourcesIndex["adler32"] = {"name":"","files":["lib.rs"]};
 sourcesIndex["array2"] = {"name":"","files":["lib.rs"]};

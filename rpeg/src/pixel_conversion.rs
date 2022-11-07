@@ -25,9 +25,9 @@ pub fn float_to_rgb(rgb_floats: (f64, f64, f64), denom: f64) -> Rgb{
     let (r, g, b) = rgb_floats;
     Rgb
     {
-        red: (r * denom) as u16,
-        green: (g * denom) as u16,
-        blue: (b * denom) as u16
+        red: (r.clamp(0.0,1.0) * denom) as u16,
+        green: (g.clamp(0.0,1.0) * denom) as u16,
+        blue: (b.clamp(0.0, 1.0) * denom) as u16
     }
 }
 
@@ -54,7 +54,7 @@ pub fn get_decompression_tuple(comp_vid_floats: (f64, f64, f64)) -> (f64, f64, f
     let (y, pb, pr) = comp_vid_floats;
     (
         1.0*y + 0.0*pb + 1.402*pr,
-        (1.0*y - 0.344136*pb) - 0.714136*pr,
+        1.0*y - 0.344136*pb - 0.714136*pr,
         1.0*y + 1.772*pb + 0.0*pr
     )
 }

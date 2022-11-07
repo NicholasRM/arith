@@ -59,7 +59,7 @@ pub fn getu(word: u64, width: u64, lsb: u64) -> u64 {
 /// * `lsb`: the least-significant bit of the bit field
 /// * `value`: the unsigned value to place into that bit field
 pub fn newu(word: u64, width: u64, lsb: u64, value: u64) -> Option<u64> {
-    if !fitsu(value, width) || width + lsb > 64 {
+    if !fitsu(value, width) || width + lsb > 64 || getu(word, width, lsb) != 0 {
         None
     } else {
         let mask = shlu(maxu(width), lsb);
@@ -81,7 +81,7 @@ pub fn newu(word: u64, width: u64, lsb: u64, value: u64) -> Option<u64> {
 /// * `lsb`: the least-significant bit of the bit field
 /// * `value`: the signed value to place into that bit field
 pub fn news(word: u64, width: u64, lsb: u64, value: i64) -> Option<u64> {
-    if !fitss(value, width) || width + lsb > 64 {
+    if !fitss(value, width) || width + lsb > 64 || gets(word, width, lsb) != 0{
         None
     } else {
         let mask = shlu(maxu(width), lsb);
@@ -92,6 +92,18 @@ pub fn news(word: u64, width: u64, lsb: u64, value: i64) -> Option<u64> {
     }
 }
 
+
+/// Helper function to calculate the largest possible 
+/// unsigned value given a width.
+/// 
+/// If the width is 0, all bits are turned off.
+/// If the width is >=64, then all bits are turned on.
+/// If the width lies within that range, then bits 0..width are turned on.
+/// 
+/// # Arguments:
+/// * `width`: the width of the bit field
+
+#[inline]
 pub fn maxu(width: u64) -> u64 {
     match width {
         0 => 0,
@@ -100,6 +112,17 @@ pub fn maxu(width: u64) -> u64 {
     }
 }
 
+/// Helper function to calculate the largest possible 
+/// signed value given a width.
+/// 
+/// If the width is 0, all bits are turned off.
+/// If the width is >=64, then all bits are turned on except the last bit.
+/// If the width lies within that range, then bits 0..(width-1) are turned on.
+/// 
+/// # Arguments:
+/// * `width`: the width of the bit field
+
+#[inline]
 pub fn maxs(width: u64) -> i64 {
     match width {
         0 => 0,
@@ -108,6 +131,16 @@ pub fn maxs(width: u64) -> i64 {
     }
 }
 
+/// Helper function to safely shift an unsigned value left.
+/// 
+/// If the shift exceeds the word-width (64 bits), then 0 is returned.
+/// Otherwise, the value is shifted left by lsb bits
+/// 
+/// # Arguments:
+/// * `n`: the value being shifted
+/// * `lsb`: the intended lsb for n to be shifted to
+
+#[inline]
 fn shlu(n: u64, lsb: u64) -> u64 {
     if lsb >= 64 {
         0
@@ -116,6 +149,16 @@ fn shlu(n: u64, lsb: u64) -> u64 {
     }
 }
 
+/// Helper function to safely shift an signed value left.
+/// 
+/// If the shift exceeds the word-width (64 bits), then 0 is returned.
+/// Otherwise, the value is shifted left by lsb bits
+/// 
+/// # Arguments:
+/// * `n`: the value being shifted
+/// * `lsb`: the intended lsb for n to be shifted to
+
+#[inline]
 fn shls(n: i64, lsb: u64) -> i64 {
     if lsb >= 64 {
         0
@@ -124,6 +167,16 @@ fn shls(n: i64, lsb: u64) -> i64 {
     }
 }
 
+/// Helper function to safely shift an unsigned value right.
+/// 
+/// If the shift exceeds the word-width (64 bits), then 0 is returned.
+/// Otherwise, the value is shifted left by lsb bits
+/// 
+/// # Arguments:
+/// * `n`: the value being shifted
+/// * `lsb`: the intended lsb for n to be shifted to
+
+#[inline]
 fn shru(n: u64, lsb: u64) -> u64 {
     if lsb >= 64 {
         0
@@ -132,6 +185,16 @@ fn shru(n: u64, lsb: u64) -> u64 {
     }
 }
 
+/// Helper function to safely shift an signed value right.
+/// 
+/// If the shift exceeds the word-width (64 bits), then 0 is returned.
+/// Otherwise, the value is shifted left by lsb bits
+/// 
+/// # Arguments:
+/// * `n`: the value being shifted
+/// * `lsb`: the intended lsb for n to be shifted to
+
+#[inline]
 fn shrs(n: i64, lsb: u64) -> i64 {
     if lsb >= 64 {
         0
@@ -209,5 +272,37 @@ mod tests {
         
     }
 
-    
+    #[test]
+    fn test_getu() {
+        assert_eq!(bitpack::getu(0b11000000, 3, 5), 6);
+        assert_eq!(bitpack::getu(0xffbacde, 8, 20), 0xff);
+        assert_eq!(bitpack::getu(964736, 0, 0), 0);
+        assert_eq!(bitpack::getu(10101010101, 0, 7), 0);
+        assert_eq!(bitpack::getu(101010010101010, 64, 0), 101010010101010);
+    }
+
+    #[test]
+    fn test_gets() {
+        assert_eq!(bitpack::gets(0b11000000, 3, 5), -2);
+        assert_eq!(bitpack::gets(0xffbacde, 8, 20), -1);
+        assert_eq!(bitpack::gets(964736, 0, 0), 0);
+        assert_eq!(bitpack::gets(10101010101, 0, 7), 0);
+        assert_eq!(bitpack::gets(101010010101010, 64, 0), 101010010101010);
+    }
+
+    #[test]
+    fn test_newu() {
+        assert_eq!(bitpack::newu(0, 3, 5, 6), Some(0b11000000));
+        assert_eq!(bitpack::newu(0, 16, 20, 0xfffff), None); //value does not fit
+        assert_eq!(bitpack::newu(0, 45, 20, 6), None); //target area extends outside of word
+        assert_eq!(bitpack::newu(0b11000000, 3, 5, 5), None) //target area is not empty
+    }
+
+    #[test]
+    fn test_news() {
+        assert_eq!(bitpack::news(0, 3, 5, -2), Some(0b11000000));
+        assert_eq!(bitpack::news(0, 16, 20, 0xffff), None); //value does not fit
+        assert_eq!(bitpack::news(0, 45, 20, 6), None); //target area extends outside of word
+        assert_eq!(bitpack::news(0b11000000, 3, 5, -3), None) //target area is not empty
+    }
 }

@@ -1,4 +1,5 @@
 (function() {var implementors = {};
+implementors["rpeg"] = [{"text":"impl Freeze for <a class=\"struct\" href=\"rpeg/pixel_block/struct.PixelBlock.html\" title=\"struct rpeg::pixel_block::PixelBlock\">PixelBlock</a>","synthetic":true,"types":["rpeg::pixel_block::PixelBlock"]}];
 implementors["adler"] = [{"text":"impl Freeze for <a class=\"struct\" href=\"adler/struct.Adler32.html\" title=\"struct adler::Adler32\">Adler32</a>","synthetic":true,"types":["adler::Adler32"]}];
 implementors["adler32"] = [{"text":"impl Freeze for <a class=\"struct\" href=\"adler32/struct.RollingAdler32.html\" title=\"struct adler32::RollingAdler32\">RollingAdler32</a>","synthetic":true,"types":["adler32::RollingAdler32"]}];
 implementors["array2"] = [{"text":"impl&lt;T&gt; Freeze for <a class=\"struct\" href=\"array2/struct.Array2.html\" title=\"struct array2::Array2\">Array2</a>&lt;T&gt;","synthetic":true,"types":["array2::Array2"]}];
